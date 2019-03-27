@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <canvas id="joycanvas" width = '200' height="200" style="border:1px solid #d3d3d3;"></canvas></canvas>
+</head>
+<body>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script>
+
+        var hasgp = false
+        
+        $(document).ready(function () {            
+            function drawstick(gamepad){
+                    //updade gamepads(for chrome support)
+                    var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+                    var gamepad = gamepads[0];
+
+                    let xpos = 100 + 100*gamepad.axes[0];
+                    let ypos = 100 + 100*gamepad.axes[1];
+
+                    var joycanvas = document.getElementById("joycanvas");
+                    var joycanvasctx = joycanvas.getContext("2d");
+                    joycanvasctx.clearRect(0, 0, joycanvas.width, joycanvas.height);
+                    joycanvasctx.moveTo(0,0);
+                    joycanvasctx.beginPath();
+                    joycanvasctx.arc(xpos,ypos,20,0,2 * Math.PI);
+
+                    if(gamepad.buttons[0].pressed){
+                        joycanvasctx.fillStyle = "red";
+                    }else{
+                        joycanvasctx.fillStyle = "blue";
+                    }
+                    joycanvasctx.fill();
+
+                    console.log("Ran drawstick!")
+                }
+            
+
+            window.addEventListener("gamepadconnected", function(e){
+                var gp = navigator.getGamepads()[e.gamepad.index];
+                console.log("Gamepad connected at index " + gp.index + ": " + gp.id + ". It has " + gp.buttons.length + " buttons and " + gp.axes.length + " axes.")
+                alert("Gamepad " + e.gamepad.id + " is Connected!");
+                setInterval( function(){drawstick(gp);}, 50);
+            })
+
+            window.addEventListener("gamepaddisconnected", function(e){
+                alert('Gamepad Disconnected!');
+            })
+
+
+
+
+        });
+
+
+
+
+
+    </script>
+</body>
+</html>
